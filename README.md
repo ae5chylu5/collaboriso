@@ -1,0 +1,2 @@
+# collaboriso
+Multiboot usb generator
