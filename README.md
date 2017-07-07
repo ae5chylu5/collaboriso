@@ -2,7 +2,7 @@
 Multiboot usb generator
 
 ## REQUIRED
-* lslk
+* lsblk
 * umount
 * parted
 * mkfs.fat
@@ -18,8 +18,11 @@ Only Linux is supported at this time. The source code may compile on other platf
 
 ## BUILD
 qmake -recursive
+
 make
+
 cd gui
+
 ./collaboriso
 
 ## TODO
