@@ -1,0 +1,24 @@
+{
+  "isos": [
+    {
+      "bootType": 0,
+      "strictHash": 1,
+      "title": "Dr Web",
+      "hash": "352067f40c6d2803a53ca347334add5db745c48a",
+      "category": "Anti-Virus",
+      "bootOptions": "linux {{ISOFOLDER}}/casper/vmlinuz live-media-path={{ISOFOLDER}}/casper root=UUID={{UUID}}  maybe-ubiquity debian-installer/language=en boot=casper showmounts ignore_uuid noprompt quiet splash --\ninitrd {{ISOFOLDER}}/casper/initrd.lz",
+      "created": "2017-05-19 19:52:30.000",
+      "modified": "2017-05-19 19:52:30.000"
+    },
+    {
+      "bootType": 0,
+      "strictHash": 1,
+      "title": "Eset",
+      "hash": "330c4cba749900a5902d355a1d87bfc18e98da88",
+      "category": "Anti-Virus",
+      "bootOptions": "linux {{ISOFOLDER}}/casper/vmlinuz live-media-path={{ISOFOLDER}}/casper root=UUID={{UUID}}  maybe-ubiquity debian-installer/language=en boot=casper showmounts ignore_uuid noprompt quiet splash --\ninitrd {{ISOFOLDER}}/casper/initrd.lz",
+      "created": "2017-05-19 19:53:30.000",
+      "modified": "2017-05-19 19:53:30.000"
+    }
+  ]
+}

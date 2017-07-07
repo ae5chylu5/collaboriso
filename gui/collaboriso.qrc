@@ -1,0 +1,32 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/cancel48.png</file>
+        <file>images/collaboriso48.png</file>
+        <file>images/grub48.png</file>
+        <file>images/select48.png</file>
+        <file>images/settings48.png</file>
+        <file>images/supported48.png</file>
+        <file>images/tree48.png</file>
+        <file>images/unsupported48.png</file>
+        <file>images/update48.png</file>
+        <file>images/usb48.png</file>
+        <file>images/verify48.png</file>
+        <file>images/addmenu48.png</file>
+        <file>images/addiso48.png</file>
+        <file>images/remove48.png</file>
+        <file>images/removeall48.png</file>
+        <file>images/boot48.png</file>
+        <file>images/caution48.png</file>
+        <file>images/about48.png</file>
+        <file>images/folder48.png</file>
+        <file>images/down48.png</file>
+        <file>images/up48.png</file>
+        <file>images/sortaz48.png</file>
+        <file>images/sortza48.png</file>
+        <file>images/progress48.png</file>
+        <file>images/downarrow24.png</file>
+        <file>images/bluecircle24.png</file>
+        <file>images/checkmark24.png</file>
+        <file>docs/about.htm</file>
+    </qresource>
+</RCC>
