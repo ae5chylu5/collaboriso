@@ -183,6 +183,8 @@ int main(int argc, char *argv[])
         qDebug() << "You must specify a target device and valid file system.";
         return 1;
     }
+    // parted requires ntfs to be uppercase
+    if (fsType == "ntfs") fsType.toUpper();
     // end CLI options parser
 
     // unmount all usb partitions
@@ -210,7 +212,7 @@ int main(int argc, char *argv[])
     }
 
     QProcess mkfs;
-    mkfs.start(QObject::tr("%1 COLLABORISO %2").arg((fsType == "fat32") ? "mkfs.fat -n" : "mkntfs -L").arg(parts[0]));
+    mkfs.start(QObject::tr("%1 COLLABORISO %2").arg((fsType == "fat32") ? "mkfs.fat -n" : "mkntfs -f -L").arg(parts[0]));
     if (!mkfs.waitForStarted() || !mkfs.waitForFinished()) return 1;
     if (!mkfs.readAll().isEmpty()) qDebug() << mkfs.readAll();
 
