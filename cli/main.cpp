@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
         return 1;
     }
     // parted requires ntfs to be uppercase
-    if (fsType == "ntfs") fsType.toUpper();
+    if (fsType == "ntfs") fsType = fsType.toUpper();
     // end CLI options parser
 
     // unmount all usb partitions
