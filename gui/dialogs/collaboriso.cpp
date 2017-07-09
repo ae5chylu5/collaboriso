@@ -131,7 +131,7 @@ void Collaboriso::generateUSB()
     if (suApp == "kdesudo") {
         suArgs = tr("-d --title \"Collaboriso\" --comment \"Many of the utilities required by collaboriso must be run as root.\" -c");
     } else {
-        suArgs = tr("-D \"Many of the utilities required by collaboriso must be run as root.\"");
+        suArgs = tr("-m \"Many of the utilities required by collaboriso must be run as root.\"");
     }
 
     /*proDlg->setProgressMsg1(tr("Generating usb..."));
