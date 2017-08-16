@@ -312,7 +312,7 @@ QString Collaboriso::getLatestTimestamp()
     sqldb.commit();
     sqldb.close();
 
-    return (!success) ? "" : sq.value(0).toString();
+    return (!success) ? "null" : sq.value(0).toString();
 }
 
 void Collaboriso::update()
@@ -334,8 +334,8 @@ void Collaboriso::update()
         QString tstamp = getLatestTimestamp();
         urlStr.replace("{{TIMESTAMP}}", tstamp);
         qDebug() << urlStr;
-        return;
     }
+
     QUrl url(urlStr);
     download(url);
 }
