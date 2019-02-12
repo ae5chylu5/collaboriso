@@ -50,7 +50,7 @@ public:
 
 private:
     void clearTable();
-    bool isUSB(QString hotplug, QString subsystems, QString transport);
+    bool isUSB(bool hotplug, QString subsystems, QString transport);
     QTimer *timer;
 
 private slots:

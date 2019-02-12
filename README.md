@@ -11,10 +11,13 @@ Multiboot usb generator
 * chroot
 * grub-install
 * 7z
-* kdesudo | gksudo
+* pkexec
 
 ## OS
-Only Linux is supported at this time. The source code may compile on other platforms but without the console apps listed above you won't be able to generate the usb.
+Only Linux is supported at this time. The source code may compile on other platforms but without the console apps listed above you won't be able to generate the usb. Tested on KaOS and KDE Neon.
+
+## QT
+Tested on Qt 5.12. It may not compile on earlier versions.
 
 ## BUILD
 qmake -recursive

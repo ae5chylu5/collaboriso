@@ -59,8 +59,8 @@ DeviceSelector::DeviceSelector(QWidget *parent)
     connect(timer, SIGNAL(timeout()), this, SLOT(getUSBDevices()));
 }
 
-bool DeviceSelector::isUSB(QString hotplug, QString subsystems, QString transport) {
-    if (hotplug.toInt() == 1 && subsystems.contains(":usb:") && transport == "usb") {
+bool DeviceSelector::isUSB(bool hotplug, QString subsystems, QString transport) {
+    if (hotplug == 1 && subsystems.contains(":usb:") && transport == "usb") {
         return 1;
     }
     return 0;
@@ -71,6 +71,7 @@ void DeviceSelector::getUSBDevices()
     clearTable();
 
     int row;
+    bool hotplug;
     QString devLabel, devPath, devUUID, devMountPoint;
     QJsonValue jsonVal2;
     QJsonObject dev, partition;
@@ -79,7 +80,7 @@ void DeviceSelector::getUSBDevices()
 
     QProcess lsblk;
     lsblk.start("lsblk -Jpno VENDOR,SIZE,NAME,HOTPLUG,SUBSYSTEMS,TRAN");
-    if (!lsblk.waitForStarted() || !lsblk.waitForFinished()) return;
+    if (!lsblk.waitForStarted(-1) || !lsblk.waitForFinished(-1)) return;
 
     QByteArray jsonRaw = lsblk.readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonRaw);
@@ -89,7 +90,10 @@ void DeviceSelector::getUSBDevices()
     QJsonArray devices = jsonRootObj["blockdevices"].toArray();
     foreach (const QJsonValue & jsonVal, devices) {
         dev = jsonVal.toObject();
-        if (!isUSB(dev["hotplug"].toString(), dev["subsystems"].toString(), dev["tran"].toString())) continue;
+        // different versions of lsblk return different variable types for hotplug.
+        // can be either bool or integer as a string. ex: "1"
+        hotplug = (dev["hotplug"].isBool()) ? dev["hotplug"].toBool() : dev["hotplug"].toString().toInt();
+        if (!isUSB(hotplug, dev["subsystems"].toString(), dev["tran"].toString())) continue;
 
         devPath = dev["name"].toString();
         devLabel = tr("%1 %2 %3").arg(dev["vendor"].toString().trimmed()).arg(dev["size"].toString()).arg(devPath);

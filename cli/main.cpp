@@ -62,7 +62,7 @@ QStringList getParts(QString device, int repeat = 0)
 
     QProcess lsblk;
     lsblk.start(QObject::tr("lsblk -Jpno NAME,MOUNTPOINT %1").arg(device));
-    if (!lsblk.waitForStarted() || !lsblk.waitForFinished()) return parts;
+    if (!lsblk.waitForStarted(-1) || !lsblk.waitForFinished(-1)) return parts;
 
     QByteArray jsonRaw = lsblk.readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonRaw);
@@ -105,7 +105,7 @@ QStringList getMounts(QString device, int repeat = 0)
 
     QProcess lsblk;
     lsblk.start(QObject::tr("lsblk -Jpno NAME,MOUNTPOINT %1").arg(device));
-    if (!lsblk.waitForStarted() || !lsblk.waitForFinished()) return mounts;
+    if (!lsblk.waitForStarted(-1) || !lsblk.waitForFinished(-1)) return mounts;
 
     QByteArray jsonRaw = lsblk.readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonRaw);
@@ -192,17 +192,17 @@ int main(int argc, char *argv[])
     QStringList mounts = getMounts(targetDev);
     for (int i = 0, total = mounts.size(); i < total; ++i) {
         umount.start(QObject::tr("umount -l %1").arg(mounts[i]));
-        if (!umount.waitForStarted() || !umount.waitForFinished()) return 1;
+        if (!umount.waitForStarted(-1) || !umount.waitForFinished(-1)) return 1;
         if (!umount.readAll().isEmpty()) qDebug() << umount.readAll();
     }
 
     QProcess parted;
     parted.start(QObject::tr("parted -s %1 mklabel msdos").arg(targetDev));
-    if (!parted.waitForStarted() || !parted.waitForFinished()) return 1;
+    if (!parted.waitForStarted(-1) || !parted.waitForFinished(-1)) return 1;
     if (!parted.readAll().isEmpty()) qDebug() << parted.readAll();
 
     parted.start(QObject::tr("parted -s -a opt %1 mkpart primary %2 0% 100%").arg(targetDev).arg(fsType));
-    if (!parted.waitForStarted() || !parted.waitForFinished()) return 1;
+    if (!parted.waitForStarted(-1) || !parted.waitForFinished(-1)) return 1;
     if (!parted.readAll().isEmpty()) qDebug() << parted.readAll();
 
     QStringList parts = getParts(targetDev, 3);
@@ -213,12 +213,12 @@ int main(int argc, char *argv[])
 
     QProcess mkfs;
     mkfs.start(QObject::tr("%1 COLLABORISO %2").arg((fsType == "fat32") ? "mkfs.fat -n" : "mkntfs -f -L").arg(parts[0]));
-    if (!mkfs.waitForStarted() || !mkfs.waitForFinished()) return 1;
+    if (!mkfs.waitForStarted(-1) || !mkfs.waitForFinished(-1)) return 1;
     if (!mkfs.readAll().isEmpty()) qDebug() << mkfs.readAll();
 
     // set the boot flag
     parted.start(QObject::tr("parted -s %1 set %2 boot on").arg(targetDev).arg("1"));
-    if (!parted.waitForStarted() || !parted.waitForFinished()) return 1;
+    if (!parted.waitForStarted(-1) || !parted.waitForFinished(-1)) return 1;
     if (!parted.readAll().isEmpty()) qDebug() << parted.readAll();
 
     QDir mp = QDir(defaultMountPoint);
@@ -241,7 +241,7 @@ int main(int argc, char *argv[])
     // won't have write access from the gui without the umask setting.
     QProcess mount;
     mount.start(QObject::tr("mount -o umask=000 %1 %2").arg(parts[0]).arg(defaultMountPoint));
-    if (!mount.waitForStarted() || !mount.waitForFinished()) return 1;
+    if (!mount.waitForStarted(-1) || !mount.waitForFinished(-1)) return 1;
     if (!mount.readAll().isEmpty()) qDebug() << mount.readAll();
 
     mounts.clear();
@@ -265,14 +265,14 @@ int main(int argc, char *argv[])
                 }
             }
             mount.start(QObject::tr("mount --bind %1 %2").arg(vFolders[i]).arg(vdir.path()));
-            if (!mount.waitForStarted() || !mount.waitForFinished()) return 1;
+            if (!mount.waitForStarted(-1) || !mount.waitForFinished(-1)) return 1;
             if (!mount.readAll().isEmpty()) qDebug() << mount.readAll();
         }
     }
 
     QProcess grubInstall;
     grubInstall.start(QObject::tr("chroot %1 grub-install --recheck %2").arg(defaultMountPoint).arg(targetDev));
-    if (!grubInstall.waitForStarted() || !grubInstall.waitForFinished()) return 1;
+    if (!grubInstall.waitForStarted(-1) || !grubInstall.waitForFinished(-1)) return 1;
     if (!grubInstall.readAll().isEmpty()) qDebug() << grubInstall.readAll();
 
     // unmount all virtual folders
@@ -280,8 +280,15 @@ int main(int argc, char *argv[])
         finfo.setFile(vFolders[i]);
         if (finfo.exists()) {
             umount.start(QObject::tr("umount -l %1%2").arg(defaultMountPoint).arg(vFolders[i]));
-            if (!umount.waitForStarted() || !umount.waitForFinished()) return 1;
+            if (!umount.waitForStarted(-1) || !umount.waitForFinished(-1)) return 1;
             if (!umount.readAll().isEmpty()) qDebug() << umount.readAll();
+            vdir.setPath(QObject::tr("%1%2").arg(defaultMountPoint).arg(vFolders[i]));
+            if (vdir.exists()) {
+                if (!vdir.rmpath(vdir.path())) {
+                    qDebug() << "Unable to remove virtual directory";
+                    return 1;
+                }
+            }
         }
     }
 

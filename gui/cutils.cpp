@@ -55,7 +55,7 @@ CU::CU()
 
     //catTable = tr("CREATE TABLE IF NOT EXISTS categories (id INTEGER PRIMARY KEY AUTOINCREMENT, category VARCHAR(64), UNIQUE (category))");
 
-    reqApps << "umount" << "parted" << "mkfs.fat" << "mkntfs" << "chroot" << "grub-install" << "lsblk" << "mount" << "7z" << "collaboriso_cli" << "kdesudo" << "gksudo";
+    reqApps << "umount" << "parted" << "mkfs.fat" << "mkntfs" << "chroot" << "grub-install" << "lsblk" << "mount" << "7z" << "collaboriso_cli" << "pkexec";
 }
 
 bool CU::mkHomeDir()

@@ -31,7 +31,7 @@ Collaboriso::Collaboriso(QWidget *parent)
     int winHeight = 500;
 
     cliPath = "collaboriso_cli";
-    suApp = "kdesudo";
+    suApp = "pkexec";
 
     createToolBars();
     createStatusBar();
@@ -75,19 +75,6 @@ Collaboriso::Collaboriso(QWidget *parent)
             }
         }
 
-        bool kdeNF = nf.contains("kdesudo");
-        bool gkNF = nf.contains("gksudo");
-        if (kdeNF && gkNF) {
-            qDebug() << "You must have either gksu or kdesudo installed.";
-        } else if (kdeNF) {
-            // kdesudo not found, gksudo is available
-            nf.removeAt(nf.indexOf(QRegExp("kdesudo")));
-            suApp = "gksudo";
-        } else if (gkNF) {
-            // gksudo not found, kdesudo is available
-            nf.removeAt(nf.indexOf(QRegExp("gksudo")));
-        }
-
         if (nf.size() > 0) {
             qDebug() << "These apps cannot be found: " << nf;
             // disable usb generator button if any apps are missing
@@ -127,13 +114,6 @@ void Collaboriso::generateUSB()
         uname = qgetenv("USERNAME");
     }*/
 
-    QString suArgs;
-    if (suApp == "kdesudo") {
-        suArgs = tr("-d --title \"Collaboriso\" --comment \"Many of the utilities required by collaboriso must be run as root.\" -c");
-    } else {
-        suArgs = tr("-m \"Many of the utilities required by collaboriso must be run as root.\"");
-    }
-
     /*proDlg->setProgressMsg1(tr("Generating usb..."));
     proDlg->setProgressRange(0, 4);
     proDlg->setProgressMsg2(tr(""));
@@ -145,8 +125,8 @@ void Collaboriso::generateUSB()
                                    QMessageBox::Ok);
 
     QProcess collabCLI;
-    collabCLI.start(tr("%1 %2 \"%3 -t %4 -f %5\"").arg(suApp).arg(suArgs).arg(cliPath).arg(devPath).arg(setDlg->fsType->currentText()));
-    if (!collabCLI.waitForStarted() || !collabCLI.waitForFinished()) return;
+    collabCLI.start(tr("%1 \"%2\" -t \"%3\" -f %4").arg(suApp).arg(cliPath).arg(devPath).arg(setDlg->fsType->currentText()));
+    if (!collabCLI.waitForStarted(-1) || !collabCLI.waitForFinished(-1)) return;
 
     int btn;
     QString output = collabCLI.readAll();
@@ -230,7 +210,7 @@ void Collaboriso::generateUSB()
             }
         }
         z7.start(tr("7z x -o%1 %2").arg(isoDestPath).arg(isos[i]->text(1)));
-        if (!z7.waitForStarted() || !z7.waitForFinished()) return;
+        if (!z7.waitForStarted(-1) || !z7.waitForFinished(-1)) return;
     }
 
     // save grub to mount point
@@ -259,7 +239,7 @@ void Collaboriso::getDeviceInfo()
 
     QProcess lsblk;
     lsblk.start(tr("lsblk -Jpno NAME,UUID,MOUNTPOINT %1").arg(devPath));
-    if (!lsblk.waitForStarted() || !lsblk.waitForFinished()) return;
+    if (!lsblk.waitForStarted(-1) || !lsblk.waitForFinished(-1)) return;
 
     QByteArray jsonRaw = lsblk.readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonRaw);
